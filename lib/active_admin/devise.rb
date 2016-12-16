@@ -33,7 +33,9 @@ module ActiveAdmin
 
       # Redirect to the default namespace on logout
       def root_path
-        namespace = ActiveAdmin.application.default_namespace.presence
+        namespace = ActiveAdmin.application.namespaces[request.env['devise.mapping'].path.to_sym].nil? ?
+                      ActiveAdmin.application.default_namespace.presence :
+                      request.env['devise.mapping'].path
         root_path_method = [namespace, :root_path].compact.join('_')
 
         path = if Helpers::Routes.respond_to? root_path_method
